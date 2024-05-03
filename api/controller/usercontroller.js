@@ -2,12 +2,9 @@ const User=require('../model/user.model');
 
 module.exports.signin=async(req,res)=>{
     try{
-        console.log(req.body);
+        // console.log(req.body);
         const {name,email,password,role}=req.body;
        const user= await User.findOne({ email:email }).exec();
-    //    console.log('user',user);
-    //    console.log('user email',user.email);
-        
         if(!user){
             const doc = new User();
             doc.name =name;
@@ -25,8 +22,25 @@ module.exports.signin=async(req,res)=>{
     }
     catch(error){
         console.log(error);
-    }
-    
-    
+    } 
+}
 
+module.exports.signup=async(req,res)=>{
+    try{
+   const {email,password}=req.body;
+   const user= await User.findOne({ email:email }).exec();
+   if(user.password===password){
+    res.cookie('token',email);
+    res.status(200).json({
+        message:"signup done"
+    })
+   }
+   else{
+    res.status(400).json({message:"username or password is invalid"})
+   }
+
+    }
+    catch(error){
+
+    }
 }
